@@ -1,0 +1,9 @@
+<div class="col-md-8 col-md-offset-2">
+  <h1><span *ngIf="genericService.newObj">Create</span> {{model | genericField }}</h1>
+
+  <div class="alert alert-danger" *ngIf="error">{{error}}</div>
+  <div class="alert alert-success" *ngIf="success">Data saved successfully!</div>
+
+  <schema-form *ngIf="showForm" [(schema)]="formSchema" [(model)]="objectModel" [actions]="formActions"></schema-form>
+
+</div>

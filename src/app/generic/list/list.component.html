@@ -1,0 +1,19 @@
+<div>
+  
+<h1 class='pull-left'>{{model | genericField }}</h1>
+<div class="pull-right"><button (click)="create()" class="btn btn-default"><i class='glyphicon glyphicon-plus'></i> New {{ model | genericField }}</button></div>
+</div>
+
+<table class="table table-hover table-responsive">
+  <tr>
+    <th *ngFor="let field of genericService.schema">{{field.field | genericField }}</th>
+    <th></th>
+    <th></th>
+  </tr>
+  <tr *ngFor="let line of data">
+    <td *ngFor="let field of genericService.schema">{{line[field.field]}}</td>
+    <td><a (click)="edit(line)"><button class="btn btn-default" ><i class="glyphicon glyphicon-edit"></i> Edit</button></a></td>
+    <td><a (click)="delete(line)"><button class="btn btn-primary"><i class="glyphicon glyphicon-trash"></i> Delete</button></a></td>
+  </tr>
+  <tr *ngIf="!data.length">No data found.</tr>
+</table>
