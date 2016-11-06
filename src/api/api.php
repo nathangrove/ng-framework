@@ -4,7 +4,7 @@
 ################################
 # CONFIGURATION
 ################################
-$auth_default    = false;       # should we require authentication by defualt?
+$auth_default    = true;       # should we require authentication by defualt?
 $auto_route      = true;       # should we try to auto route if contoller is found but not a route?
 $generic_route   = true;       # activate the generic controller and router?
 $schema_route    = true;       # turn on a schema or data model route? THIS IS DANGEROUS. USE FOR DEV/PROTOTYPING
@@ -28,7 +28,7 @@ $db_host      = "";
 # route path => route controller
 ################################
 $routes = array(
-  "/event_example/:id" => "event_example/controller.php",
+  #"/event/:id" => "event/controller.php",
 );
 ################################
 
@@ -76,6 +76,7 @@ try {
 @$config->auto_route = $auto_route;
 @$config->generic_route = $generic_route;
 @$config->schema_route = $schema_route;
+@$config->libdir = __DIR__ . "/lib";
 
 $api = new API($config,$routes);
 $api->process();
