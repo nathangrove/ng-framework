@@ -29,10 +29,12 @@ export class Field {
   };
 
   determineWidget(t: string){
+    if (t.indexOf('mediumtext') > -1) return 'tinymce';
     if (t.indexOf('text') > -1) return 'textarea';
     if (t.indexOf('set') == 0) return 'select';
     if (t.indexOf('enum') == 0) return 'select';
     if (t.indexOf('datetime') == 0) return 'date-time';
+    if (t.indexOf('date') == 0) return 'date';
     if (t.indexOf('int(1)') == 0) return 'checkbox';
     else return '';
   };

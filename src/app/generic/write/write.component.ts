@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Response } from '@angular/http';
+import { WidgetRegistry } from "angular2-schema-form";
+import { TinyMCEWidget } from "ng2sf-tinymce";
 
 import { GenericService } from '../generic.service';
 
@@ -21,15 +23,18 @@ export class GenericWriteComponent implements OnInit {
   showForm: boolean = false;
   error: any;
   success: boolean = false;
+  objId: string;
   
   constructor(
     private route: ActivatedRoute, 
     private genericService: GenericService, 
-    private router: Router
-  ) { }
+    private router: Router,
+    widgetRegistry: WidgetRegistry
+  ) {
+    widgetRegistry.register("tinymce", TinyMCEWidget);
+  }
 
   ngOnInit() {
-
     let params = this.route.snapshot.params;
 
     // if there is no ID...then we are going to create a new one...
@@ -54,35 +59,42 @@ export class GenericWriteComponent implements OnInit {
       this.sub = this.genericService.save(property.value).subscribe(
         (r: Response) => { 
           this.objectModel = r.json(); 
-          this.success = true;
-          setTimeout(e => this.success = false, 2000); 
-          this.error = null; 
+          this.handleSuccess();
+          this.genericService.get(this.genericService.objId);
           this.sub.unsubscribe();
         }, (e: any) => { 
-          this.error = e._body; 
-          this.success = false; 
-          setTimeout(e => this.error = null, 5000); 
+          this.handleError(e._body);
           this.sub.unsubscribe();
         });
     },
   }
 
-  loadSchema(model: string, id: string = ''){
+  handleSuccess(){
+    this.error = null;
+    this.success = true;
+    setTimeout(e => this.success = false, 2000);
+  }
 
+  handleError(err: string){
+    this.error = err;
+    this.success = false;
+    setTimeout(e => this.error = null, 5000);
+  }
+
+  loadSchema(model: string, id: string = ''){
     let self = this;
 
     this.model = model;
-    
+
     this.modelsub = this.genericService.selectModel(this.model).subscribe(
       response => {
         if (!response) self.router.navigate(["/404"]);
 
         if (id != ''){
           this.genericService.get(id).subscribe(p => {
+            this.formSchema = this.genericService.generateFormSchema(p.json());
             this.objectModel = p.json();
-            this.formSchema = this.genericService.generateFormSchema(this.objectModel);
-            console.log(this.formSchema);
-            this.showForm = true;
+            self.showForm = true;
           });
         } else{
           this.formSchema = this.genericService.generateFormSchema();

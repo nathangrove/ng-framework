@@ -3,7 +3,9 @@
 
   <div class="alert alert-danger" *ngIf="error">{{error}}</div>
   <div class="alert alert-success" *ngIf="success">Data saved successfully!</div>
-
-  <schema-form *ngIf="showForm" [(schema)]="formSchema" [(model)]="objectModel" [actions]="formActions"></schema-form>
+  
+  <div *ngIf="showForm">
+    <schema-form  [schema]="formSchema" [model]="objectModel" [actions]="formActions"></schema-form>
+  </div> 
 
 </div>

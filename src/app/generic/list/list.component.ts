@@ -17,6 +17,8 @@ export class GenericListComponent implements OnInit {
   sub: any;
   modelsub: any;
   tmpsub: any;
+  datasub: any;
+  error: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -41,6 +43,8 @@ export class GenericListComponent implements OnInit {
   ngOnDestroy() {
     if (typeof this.sub !== 'undefined') this.sub.unsubscribe();
     if (typeof this.modelsub !== 'undefined') this.modelsub.unsubscribe();
+    if (typeof this.datasub !== 'undefined') this.datasub.unsubscribe();
+    if (typeof this.tmpsub !== 'undefined') this.tmpsub.unsubscribe();
   }
 
   edit(line){
@@ -52,15 +56,16 @@ export class GenericListComponent implements OnInit {
   }
 
   delete(line){
+    let self = this;
     this.tmpsub = this.genericService.delete(line.id).subscribe(
       (r: Response) => {
         this.tmpsub.unsubscribe();
-        // well we have a valid data model...let's get the data...
-        this.tmpsub = this.genericService.get().subscribe(
-          (response: Response) => {
-            this.data = response.json();
-            this.tmpsub.unsubscribe();
-          });
+        this.genericService.get();
+      },
+      (e: any) => { 
+        this.tmpsub.unsubscribe();
+        self.error = "Error: " + e._body;
+        setTimeout(e => self.error = null,3000); 
       });
   }
 
@@ -75,14 +80,12 @@ export class GenericListComponent implements OnInit {
         if (!response) self.router.navigate(["/404"]);
 
         // well we have a valid data model...let's get the data...
-        this.tmpsub = this.genericService.get().subscribe(
+        this.datasub = this.genericService.get().subscribe(
           (response: Response) => {
             this.data = response.json();
-            this.tmpsub.unsubscribe();
           });
 
       }, e => {
-        console.log("Model fatch failed: ",e);
         self.router.navigate(["/404"]);
       });
   }

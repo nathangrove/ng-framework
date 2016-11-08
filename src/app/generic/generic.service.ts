@@ -16,8 +16,12 @@ export class GenericService {
   // what is our model?
   public model: string;
 
+  // is there a static ID to store?
+  public objId: string;
+
   // hold our array of fields...
   public schema: Field[];
+
 
   // set the model...
   selectModel(model ?: string): Observable<boolean>{
@@ -37,9 +41,12 @@ export class GenericService {
       }).catch(this.handleError);
   };
 
+
+
   // get elements...
   get(id ?: string): Observable<Response>{
     if (typeof id !== 'undefined' && id != ''){
+      this.objId = id;
       this.newObj = false;
       return this.http.get("/" + this.model + "/" + id);
     } else {
@@ -48,11 +55,15 @@ export class GenericService {
     }
   };
 
+
+
   // save the object...
   save(obj: any): Observable<Response>{
-    if (!this.newObj) return this.http.put("/" + this.model + "/" + obj.id, JSON.stringify(obj)); 
+    if (!this.newObj) return this.http.put("/" + this.model + "/" + this.objId, JSON.stringify(obj)); 
     return this.http.post("/" + this.model, obj);
   };
+
+
 
   // delete an object
   delete(id ?: string): Observable<Response>{
@@ -60,11 +71,13 @@ export class GenericService {
     return this.http.delete("/" + this.model + "/" + id);
   };
 
+
+
   generateFormSchema(obj: any = {}){
     let json = {
       type: "object",
       properties: {},
-      requried: [],
+      required: [],
       buttons: [{
         "id": "save",
         "classes": "btn btn-default form-control",
@@ -89,7 +102,7 @@ export class GenericService {
       if (field.options.length) property.oneOf = field.options.map(function(a){ return { "enum": [a], "description": a.toUpperCase() } });
 
       // if there is a value...add it...
-      if (typeof obj[field.field] !== 'undefined') property.default = obj[field.field];
+      // if (typeof obj[field.field] !== 'undefined') property.default = obj[field.field];
 
       // some other values...
       property.placeholder = field.placeholder;
@@ -100,15 +113,18 @@ export class GenericService {
 
 
       // is this a required field?
-      if (field.required) json.requried.push(field.field);
+      if (field.required) json.required.push(field.field);
     
     }
 
     return json;
   };
 
+
+
   private handleError (error: any) {
     // log error
+    console.log(error);
     // could be something more sofisticated
     let errorMsg = error.message || `Server Error`
 
