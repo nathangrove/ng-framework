@@ -126,7 +126,7 @@ class API {
 
         # does the call require authorization?
         if ($this->config->auth_default && $processor->{$call."_auth"} !== false){
-          $this->auth();
+          $this->authorize();
       
           # set some variables for the processor
           $processor->auth = $this->auth;
@@ -164,7 +164,7 @@ class API {
         if (is_callable(array($processor,$call))){
 
           # we are guessing here...so we will auth...
-          $this->auth();
+          $this->authorize();
         
           # set some variables for the processor
           $processor->auth = $this->auth;
@@ -227,13 +227,12 @@ class API {
 
 
   ################################
-  # auth - check if authed user
+  # authorize - check if authed user
   ################################
-  function auth($return=false){
+  function authorize($return=false){
 
     # start with pass...
     $valid = true;
-
 
     # init the auth library
     $auth = new auth();
@@ -280,7 +279,7 @@ class API {
     } elseif ($this->config->schema_route && strpos($this->path,"schema") === 0){
       
       # require auth...
-      $this->auth();
+      $this->authorize();
 
       # include the controller...
       include "schema/controller.php";

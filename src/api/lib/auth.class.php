@@ -27,9 +27,14 @@ class auth {
 
 
   function deep_validate($data){
-    $data = $validate($data);
+    $data = $this->validate($data);
 
-    $user = new dbo('user',intval($this->uid));
+    $data = base64_decode($data);
+    openssl_private_decrypt($data, $decrypted_data, $keys->private);
+
+    $data = json_decode($decrypted_data);
+
+    $user = new dbo('user',intval($data->id));
     if (!$user->id) return false;
 
     return $data;
