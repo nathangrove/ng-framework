@@ -16,7 +16,7 @@ class API {
     $this->config = $config;
     $this->routes = $routes;
 
-    $this->authorizatoin = false;
+    $this->authorization = false;
 
     # let's try to parse the request body manually if necessary
     if ($_SERVER['REQUEST_METHOD'] == 'PUT'){
