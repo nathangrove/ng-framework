@@ -94,15 +94,5 @@ class auth {
 
 
     return $keys;
-
-    // Extract the public key from $res to $pubKey
-
-    $data = 'plaintext data goes here';
-
-    // Encrypt the data to $encrypted using the public key
-    openssl_private_encrypt($data, $encrypted, $privKey);
-    
-    // Decrypt the data using the private key and store the results in $decrypted
-    openssl_private_decrypt($encrypted, $decrypted, $privKey);
   }
 }
