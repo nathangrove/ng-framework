@@ -1,6 +1,6 @@
-# ng2frame 
+# ng-framework
 
-This is a 2 part framework. It uses Angular2 on the frontend and the good old tried and true PHP for the backend.
+This is a 2 part framework. It uses Angular2+ on the frontend and the good old tried and true PHP for the backend.
 
 # Backend
 The PHP backend has the .htaccess file for apache. During development it is easiest to link the api folder to the apache public directory.
