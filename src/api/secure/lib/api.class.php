@@ -105,11 +105,16 @@ class API {
           return str_replace(":","",$a);
         },$vars);
 
-        # get our path variables...
-        $variables = [];
+        # get our path pathvars...
+        $pathvars = [];
         foreach ($vars as $idx => $var)
-          $variables[$var] = $path[$idx];
+          $pathvars[$var] = $path[$idx];
 
+        $request = new stdClass();
+        $request->pathParams = new stdClass();
+        foreach ($pathvars as $key => $val) $request->pathParams->$key = $val;
+        $request->queryParams = new stdClass();
+        foreach ($_REQUEST as $key => $val) $rquest->queryParams->$key = $val;
 
         # include the controller...
         include $controller;
@@ -117,7 +122,7 @@ class API {
         $processor = new api_module();
 
         # can we call it?
-        @$call = $variables['call'] . "_" . strtolower($_SERVER['REQUEST_METHOD']);
+        @$call = $pathvars['call'] . "_" . strtolower($_SERVER['REQUEST_METHOD']);
         if (!is_callable(array($processor,$call))){
           http_response_code(404);
           print "Controller method not found";
@@ -135,7 +140,7 @@ class API {
 
 
         # call it...
-        $processor->$call($variables);
+        $processor->$call($request);
         exit;
 
       } # if route match
@@ -143,14 +148,20 @@ class API {
     
 
 
-    # is the auth route option set?
+    # is the auto route option set?
     if ($this->config->auto_route){
 
       # let's assume the first var is the directory that contains the controller and the second will be an "id" variable...
       $route = explode("/",$this->path);
-      $dir = $route[0];
+      $dir = "calls/".$route[0];
       $id = $route[1];
-      $variables['id'] = $id;
+      $pathvars['id'] = $id;
+
+      $request = new stdClass();
+      $request->pathParams = new stdClass();
+      foreach ($pathvars as $key => $val) $request->pathParams->$key = $val;
+      $request->queryParams = new stdClass();
+      foreach ($_REQUEST as $key => $val) $rquest->queryParams->$key = $val;
 
       # maybe you forgot to register the route? let's try to blindly find the controller file...
       if (is_file("$dir/controller.php") || is_file("$dir/index.php")){
@@ -166,12 +177,12 @@ class API {
           # we are guessing here...so we will auth...
           $this->authorize();
         
-          # set some variables for the processor
+          # set some pathvars for the processor
           $processor->auth = $this->auth;
           $processor->uid = $this->auth->id;
 
           # call it...
-          $processor->$call($variables);
+          $processor->$call($request);
           exit;
         }
       }
@@ -184,16 +195,16 @@ class API {
     if ($this->config->generic_route){
 
       # hmm....we couldn't find the controller...so let's try a generic one....
-      include "generic/controller.php";
+      include "calls/generic/controller.php";
 
       $processor = new api_module();
 
       $call = "_" . strtolower($_SERVER['REQUEST_METHOD']);
       if (is_callable(array($processor,$call))){
         # we will always try to auth on these calls...
-        #$this->auth();
+        $this->auth();
 
-        # set some variables for the processor
+        # set some pathvars for the processor
         $processor->auth = $this->auth;
         $processor->uid = $this->auth->id;
 
@@ -201,11 +212,17 @@ class API {
         $route = explode("/",$this->path);
         $table = $route[0];
         $id = $route[1];
-        $variables['id'] = $id;
-        $variables['table'] = $table;
+        $pathvars['id'] = $id;
+        $pathvars['table'] = $table;
+
+        $request = new stdClass();
+        $request->pathParams = new stdClass();
+        foreach ($pathvars as $key => $val) $request->pathParams->$key = $val;
+        $request->queryParams = new stdClass();
+        foreach ($_REQUEST as $key => $val) $rquest->queryParams->$key = $val;
 
         # call it...
-        $res = $processor->$call($variables);
+        $res = $processor->$call($request);
 
         # only exit if the generic was successful...
         if ($res) exit;
@@ -276,6 +293,7 @@ class API {
         print json_encode(array("token" => $token));
       }
     
+    # intercept schema requests
     } elseif ($this->config->schema_route && strpos($this->path,"schema") === 0){
       
       # require auth...

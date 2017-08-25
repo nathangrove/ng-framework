@@ -2,14 +2,14 @@
 
 class api_module extends api_super {
 
-	function _get($variables) {
+	function _get($request) {
     
     $model_protections = json_decode(file_get_contents("$this->libdir/protected.models.json"));
 
 		# check for table...
-		if ($variables['table'] == '') return false;
+		if ($request->pathParams->table == '') return false;
 
-		$table = $variables['table'];
+		$table = $request->pathParams->table;
 
 		# special request for all available models
 		if ($table == 'available_models') {

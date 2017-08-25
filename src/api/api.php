@@ -47,15 +47,16 @@ ini_set("display_errors", 0);
 ################################
 
 # include our datbase class
-include "lib/db.class.php";
+include "$secure_dir/lib/db.class.php";
 
 # include api class
-include "lib/api.class.php";
+include "$secure_dir/lib/api.class.php";
 
 # include auth class
-include "lib/auth.class.php";
+include "$secure_dir/lib/auth.class.php";
 
 ################################
+
 
 ################################
 # Dial up DB
@@ -67,6 +68,7 @@ try {
   exit;
 }
 ################################
+
 
 
 ################################

@@ -3,15 +3,15 @@
 
 class api_module extends api_super {
   
-  function _get($variables){
+  function _get($request){
 
     $model_protections = json_decode(file_get_contents("$this->libdir/protected.models.json"));
 
     # sanity check...
-    if ($variables['table'] == '') return false;
+    if ($request->pathParams->table == '') return false;
 
-    $table = $variables['table'];
-    $id = $variables['id'];
+    $table = $request->pathParams->table;
+    $id = $request->pathParams->id;
     $id = $id == '' ? false : $id;
 
     if ($id !== false){
@@ -35,13 +35,13 @@ class api_module extends api_super {
   }
 
 
-  function _post($variables){
+  function _post($request){
 
     $model_protections = json_decode(file_get_contents("$this->libdir/protected.models.json"));
 
     # sanity check...
-    if ($variables['table'] == '') $this->error("Invalid model");
-    $table = $variables['table'];
+    if ($request->pathParams->table == '') $this->error("Invalid model");
+    $table = $request->pathParams->table;
 
     # filter only the things we can write...
     $_REQUEST = (array)$this->filter($model_protections->$table,(object)$_REQEUST,'w');
@@ -60,16 +60,16 @@ class api_module extends api_super {
 
 
 
-  function _put($variables){
+  function _put($request){
 
     $model_protections = json_decode(file_get_contents("$this->libdir/protected.models.json"));
 
     # sanity check...
-    if ($variables['table'] == '') $this->error("Invalid model");
-    if ($variables['id'] == '') $this->error("Invalid object");
+    if ($request->pathParams->table == '') $this->error("Invalid model");
+    if ($request->pathParams->id == '') $this->error("Invalid object");
 
-    $table = $variables['table'];
-    $id = $variables['id'];
+    $table = $request->pathParams->table;
+    $id = $request->pathParams->id;
 
     # filter only the things we can write...
     $_REQUEST = (array)$this->filter($model_protections->$table,(object)$_REQUEST,'w');
@@ -88,15 +88,15 @@ class api_module extends api_super {
 
 
 
-  function _delete($variables){
+  function _delete($request){
 
     $model_protections = json_decode(file_get_contents("$this->libdir/protected.models.json"));
 
     # sanity check...
-    if ($variables['table'] == '' || $variables['id'] == '') return false;
+    if ($request->pathParams->table == '' || $request->pathParams->id == '') return false;
 
-    $table = $variables['table'];
-    $id = $variables['id'];
+    $table = $request->pathParams->table;
+    $id = $request->pathParams->id;
 
     # can we delete?
     if (isset($model_protections->$table) && !strstr($model_protections->$table->permissions,'w')) $this->error("Unauthorized action");

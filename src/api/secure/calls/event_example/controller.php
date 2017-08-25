@@ -9,10 +9,10 @@ class api_module extends api_super {
 
   }
 
-  function _get($variables){
+  function _get($request){
 
-    if (isset($variables['id'])) {
-      $event = new dbo('event',intval($variables['id']));
+    if (isset($request->pathParams->id)) {
+      $event = new dbo('event',intval($request->pathParams->id));
       $this->respond($event->row);
     }
 
@@ -49,8 +49,8 @@ class api_module extends api_super {
     $this->respond($event->row);
   }
 
-  function _delete($variables){
-    $event = new dbo('event',intval($variables['id']));
+  function _delete($request){
+    $event = new dbo('event',intval($request->pathParams->id));
     $event->delete();
   }
 
