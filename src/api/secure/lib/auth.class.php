@@ -61,7 +61,7 @@ class auth {
 
     $keys = new stdClass();
 
-    $keydir = "lib/keys";
+    $keydir = __DIR__."/keys";
 
     if (!is_dir($keydir)) mkdir($keydir);
 

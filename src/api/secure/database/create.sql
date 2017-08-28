@@ -15,6 +15,18 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+-- 
+-- Create database
+--
+DROP DATABASE IF EXISTS `phpframe`;
+CREATE DATABASE phpframe;
+
+-- create/grant a user
+grant all on phpframe.* to 'phpframe'@'%' identified by 'pHpFr@m3';
+
+-- use phpframe for the rest of this;
+use phpframe;
+
 --
 -- Table structure for table `event`
 --
@@ -49,6 +61,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+INSERT INTO user (username,password,created) VALUES ('admin',MD5('admin'),NOW());
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

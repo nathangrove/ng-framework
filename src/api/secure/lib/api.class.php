@@ -1,7 +1,5 @@
 <?php
 
-$_PUT = [];
-
 ##########################################
 # API class
 ##########################################
@@ -153,7 +151,7 @@ class API {
 
       # let's assume the first var is the directory that contains the controller and the second will be an "id" variable...
       $route = explode("/",$this->path);
-      $dir = "calls/".$route[0];
+      $dir = $this->config->app_dir."/calls/".$route[0];
       $id = $route[1];
       $pathvars['id'] = $id;
 
@@ -195,14 +193,14 @@ class API {
     if ($this->config->generic_route){
 
       # hmm....we couldn't find the controller...so let's try a generic one....
-      include "calls/generic/controller.php";
+      include $this->config->app_dir."/calls/generic/controller.php";
 
       $processor = new api_module();
 
       $call = "_" . strtolower($_SERVER['REQUEST_METHOD']);
       if (is_callable(array($processor,$call))){
         # we will always try to auth on these calls...
-        $this->auth();
+        $this->authorize();
 
         # set some pathvars for the processor
         $processor->auth = $this->auth;

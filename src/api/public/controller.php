@@ -4,10 +4,11 @@
 ################################
 # CONFIGURATION
 ################################
-$auth_default    = true;       # should we require authentication by defualt?
-$auto_route      = true;       # should we try to auto route if contoller is found but not a route?
-$generic_route   = true;       # activate the generic controller and router?
-$schema_route    = true;       # turn on a schema or data model route? THIS IS DANGEROUS. USE FOR DEV/PROTOTYPING
+$secure_dir      = "/var/www/secure";  # where is our secure content at
+$auth_default    = true;               # should we require authentication by defualt?
+$auto_route      = true;               # should we try to auto route if contoller is found but not a route?
+$generic_route   = true;               # activate the generic controller and router?
+$schema_route    = true;               # turn on a schema or data model route? THIS IS DANGEROUS. USE FOR DEV/PROTOTYPING
 ################################
 
 
@@ -15,10 +16,10 @@ $schema_route    = true;       # turn on a schema or data model route? THIS IS D
 ################################
 # CONFIGURE DATABASE
 ################################
-$db_name      = "";
-$db_login     = "";
-$db_password  = "";
-$db_host      = "";
+$db_name      = "phpframe";
+$db_login     = "phpframe";
+$db_password  = "pHpFr@m3";
+$db_host      = "localhost";
 ################################
 
 
@@ -38,6 +39,13 @@ $routes = array(
 # CONFIGURE PHP
 ################################
 ini_set("display_errors", 0);
+################################
+
+
+################################
+# SET CORS
+################################
+header("Access-Control-Allow-Origin: *");
 ################################
 
 
@@ -74,6 +82,7 @@ try {
 ################################
 # Process the call...
 ################################
+@$config->app_dir = $secure_dir;
 @$config->auth_default = $auth_default;
 @$config->auto_route = $auto_route;
 @$config->generic_route = $generic_route;
